@@ -1,0 +1,238 @@
+# RachelRayna
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Music Portal</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --accent-secondary: #c084fc;
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 450px;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            padding-bottom: 80px; /* Space for nav */
+        }
+
+        h1, h2 { color: var(--accent); }
+        .hidden { display: none !important; }
+
+        /* UI Components */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        select, button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+        }
+
+        button.primary {
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Nav Bar */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-item {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-align: center;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
+
+        /* List Styling */
+        .list-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .list-item:last-child { border-bottom: none; }
+        .time-badge { color: var(--accent-secondary); font-weight: bold; font-size: 0.9rem; }
+        .event-title { font-size: 1.1rem; margin: 4px 0; }
+        .event-loc { font-size: 0.85rem; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        
+        <header style="text-align: center; margin-bottom: 30px;">
+            <h1 id="page-title">Music Portal</h1>
+        </header>
+
+        <div id="page-setup" class="page">
+            <div class="card">
+                <h2>Welcome!</h2>
+                <p>Scan successful. Set your profile to see your specific schedule.</p>
+                
+                <label>Grade</label>
+                <select id="grade">
+                    <option value="9">Grade 9</option>
+                    <option value="10">Grade 10</option>
+                    <option value="11">Grade 11</option>
+                    <option value="12">Grade 12</option>
+                </select>
+
+                <label>Instrument</label>
+                <select id="instrument">
+                    <option value="piano">Piano</option>
+                    <option value="strings">Strings (Violin/Cello)</option>
+                    <option value="winds">Winds / Brass</option>
+                    <option value="percussion">Percussion</option>
+                </select>
+
+                <label>Ensemble</label>
+                <select id="ensemble">
+                    <option value="concert">Concert Band</option>
+                    <option value="jazz">Jazz Band</option>
+                    <option value="orchestra">Orchestra</option>
+                </select>
+
+                <button class="primary" onclick="showSchedule()">Find My Schedule</button>
+            </div>
+        </div>
+
+        <div id="page-schedule" class="page hidden">
+            <div class="card">
+                <h3 id="user-display">Your Schedule</h3>
+                <div id="schedule-list">
+                    </div>
+            </div>
+        </div>
+
+        <div id="page-events" class="page hidden">
+            <div class="card">
+                <h2>Upcoming Events</h2>
+                <p>Dances, concerts, and more.</p>
+                <div id="monthly-list">
+                    <div class="list-item">
+                        <div class="time-badge">MAY 15</div>
+                        <div class="event-title">Spring Music Night</div>
+                        <div class="event-loc">Auditorium @ 7:00 PM</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="time-badge">MAY 22</div>
+                        <div class="event-title">End of Year Dance</div>
+                        <div class="event-loc">Gymnasium @ 8:00 PM</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="time-badge">JUNE 05</div>
+                        <div class="event-title">Music Awards Banquet</div>
+                        <div class="event-loc">Cafeteria @ 6:00 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav id="bottom-nav" class="nav-bar hidden">
+            <div class="nav-item active" onclick="switchPage('schedule')">Schedule</div>
+            <div class="nav-item" onclick="switchPage('events')">All Events</div>
+            <div class="nav-item" onclick="location.reload()">Reset</div>
+        </nav>
+
+    </div>
+
+    <script>
+        // DATA: You can edit this easily
+        const scheduleData = [
+            { grades: ['9','10'], inst: 'winds', ens: 'concert', title: 'Concert Band Rehearsal', time: '7:45 AM', room: '101' },
+            { grades: ['11','12'], inst: 'piano', ens: 'jazz', title: 'Jazz Rhythm Section', time: '3:30 PM', room: 'Stage' },
+            { grades: ['11','12'], inst: 'strings', ens: 'orchestra', title: 'Senior Strings', time: 'Lunch', room: '105' },
+            { grades: ['9','10','11','12'], inst: 'percussion', ens: 'concert', title: 'Percussion Sectional', time: '4:00 PM', room: '101' }
+        ];
+
+        function showSchedule() {
+            const grade = document.getElementById('grade').value;
+            const inst = document.getElementById('instrument').value;
+            const ens = document.getElementById('ensemble').value;
+
+            const matches = scheduleData.filter(s => 
+                s.grades.includes(grade) && s.inst === inst && s.ens === ens
+            );
+
+            const list = document.getElementById('schedule-list');
+            list.innerHTML = '';
+
+            if(matches.length === 0) {
+                list.innerHTML = '<p>No rehearsals found for your specific selection today.</p>';
+            } else {
+                matches.forEach(m => {
+                    list.innerHTML += `
+                        <div class="list-item">
+                            <div class="time-badge">${m.time}</div>
+                            <div class="event-title">${m.title}</div>
+                            <div class="event-loc">Room ${m.room}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('user-display').innerText = `Grade ${grade} ${inst.charAt(0).toUpperCase() + inst.slice(1)}`;
+            switchPage('schedule');
+            document.getElementById('bottom-nav').classList.remove('hidden');
+        }
+
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            // Show selected
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            
+            // Update Nav styling
+            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
+            if(pageId === 'schedule') document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if(pageId === 'events') document.querySelectorAll('.nav-item')[1].classList.add('active');
+
+            // Update Header
+            document.getElementById('page-title').innerText = pageId === 'events' ? 'School Events' : 'My Schedule';
+        }
+    </script>
+</body>
+</html>
