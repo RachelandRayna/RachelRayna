@@ -3,61 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>In Tune | Central Music</title>
+    <title>In Tune | Music Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --purple: #6D28D9;
-            --purple-light: #F5F3FF;
-            --gold: #B45309;
-            --gold-bg: #FFFBEB;
-            --text: #111827;
-            --grey: #6B7280;
+            --purple-dark: #6D28D9;
+            --purple-mid: #A78BFA;
+            --purple-bg: #F5F3FF;
+            --gold: #D4AF37;
+            --gold-soft: #FDF9EC;
+            --white: #FFFFFF;
+            --text: #1F2937;
             --border: #E5E7EB;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; margin: 0; background: #FFF; color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--white); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
 
-        header { padding: 50px 20px 25px; text-align: center; }
-        header h1 { font-size: 42px; margin: 0; color: var(--purple); font-weight: 800; letter-spacing: -2px; }
-        header p { margin: 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 11px; letter-spacing: 4px; }
+        /* Header */
+        header { padding: 45px 20px 20px; text-align: center; }
+        header h1 { font-size: 40px; margin: 0; color: var(--purple-dark); font-weight: 800; letter-spacing: -1.5px; }
+        header p { margin: 2px 0 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 11px; letter-spacing: 3px; }
 
         main { flex: 1; overflow-y: auto; padding: 0 15px 100px; }
         .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
 
-        /* Ensemble Filter */
-        .filter-wrap { display: flex; gap: 8px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; }
-        .chip { padding: 8px 16px; background: var(--purple-light); border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--purple); white-space: nowrap; border: 1px solid transparent; }
-        .chip.active { background: var(--purple); color: #FFF; }
+        /* Filter Chips */
+        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; }
+        .chip { padding: 10px 18px; background: var(--purple-bg); border-radius: 25px; font-size: 12px; font-weight: 700; color: var(--purple-dark); white-space: nowrap; border: 1.5px solid transparent; transition: 0.2s; }
+        .chip.active { background: var(--purple-dark); color: white; }
 
         /* Schedule Cards */
-        .day-label { font-size: 22px; font-weight: 800; margin: 25px 0 15px; }
-        .cat-label { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; margin: 15px 0 8px; }
-        .card { background: var(--purple-light); border-radius: 12px; padding: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--gold); }
-        .card h3 { margin: 0; font-size: 15px; font-weight: 700; }
-        .card p { margin: 2px 0 0; font-size: 12px; color: var(--grey); }
-        .time { font-size: 11px; font-weight: 700; background: #FFF; padding: 4px 8px; border-radius: 8px; color: var(--purple); }
+        .section-header { font-size: 22px; font-weight: 800; margin: 25px 0 15px; color: var(--text); }
+        .time-cat { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; margin: 18px 0 6px; letter-spacing: 1px; }
+        .card { background: var(--purple-bg); border-radius: 16px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--purple-mid); }
+        .card-info h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--purple-dark); }
+        .card-info p { margin: 4px 0 0; font-size: 13px; color: var(--text); opacity: 0.7; }
+        .pill { font-size: 11px; font-weight: 700; background: var(--white); padding: 6px 12px; border-radius: 10px; color: var(--purple-dark); border: 1px solid var(--purple-mid); }
 
-        /* --- GOOGLE CALENDAR STYLE GRID --- */
-        .month-header { font-size: 18px; font-weight: 800; margin: 20px 0 10px; color: var(--purple); text-align: center; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
-        .cal-head { background: var(--purple-light); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px 0; text-align: center; font-size: 10px; font-weight: 800; color: var(--purple); }
-        .cal-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 85px; padding: 4px; position: relative; background: #FFF; }
-        .cal-num { font-size: 11px; font-weight: 600; color: var(--grey); margin-bottom: 4px; display: block; }
-        .cal-cell.today { background: var(--gold-bg); }
-        .cal-cell.today .cal-num { color: var(--gold); font-weight: 800; }
-        .cal-ev { background: var(--purple); color: white; font-size: 8px; padding: 2px 4px; border-radius: 3px; margin-bottom: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; }
+        /* Calendar Grid */
+        .month-label { font-size: 20px; font-weight: 800; text-align: center; margin: 20px 0; color: var(--purple-dark); }
+        .cal-wrapper { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--white); }
+        .cal-h { background: var(--purple-bg); border-bottom: 1px solid var(--border); padding: 10px 0; text-align: center; font-size: 10px; font-weight: 800; color: var(--purple-dark); }
+        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 80px; padding: 6px; background: var(--white); position: relative; }
+        .cal-d:nth-child(7n) { border-right: none; }
+        .cal-num { font-size: 12px; font-weight: 600; color: #9CA3AF; }
+        .cal-d.today { background: var(--gold-soft); }
+        .cal-d.today .cal-num { color: var(--gold); font-weight: 800; }
+        .cal-tag { background: var(--purple-dark); color: white; font-size: 8px; padding: 2px 4px; border-radius: 4px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; display: block; }
 
         /* Nav */
-        nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: #FFF; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
-        .nav-it { border: none; background: none; color: var(--grey); font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-it.active { color: var(--purple); }
-        .dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; }
-        .active .dot { background: var(--purple); }
+        nav { position: fixed; bottom: 0; left: 0; right: 0; height: 85px; background: var(--white); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; }
+        .nav-link { border: none; background: none; color: #9CA3AF; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .nav-link.active { color: var(--purple-dark); }
+        .nav-indicator { width: 12px; height: 3px; border-radius: 10px; background: transparent; }
+        .active .nav-indicator { background: var(--gold); }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -69,116 +73,114 @@
 
 <main>
     <div id="sched-view" class="view active">
-        <div class="filter-wrap">
-            <div class="chip active" onclick="filterBy('All')">All Ensembles</div>
-            <div class="chip" onclick="filterBy('Symphony')">Symphony</div>
-            <div class="chip" onclick="filterBy('Orchestra')">Orchestra</div>
-            <div class="chip" onclick="filterBy('Band')">Band</div>
-            <div class="chip" onclick="filterBy('Jazz')">Jazz</div>
+        <div class="filter-scroll">
+            <div class="chip active" onclick="setFilter('All')">All Ensembles</div>
+            <div class="chip" onclick="setFilter('Symphony')">Symphony</div>
+            <div class="chip" onclick="setFilter('Orchestra')">Orchestra</div>
+            <div class="chip" onclick="setFilter('Band')">Band</div>
+            <div class="chip" onclick="setFilter('Jazz')">Jazz</div>
         </div>
-        <div id="today-box">
-            <div class="day-label" id="t-lab">Today</div>
-            <div id="t-list"></div>
+        
+        <div class="day-section">
+            <div class="section-header" id="today-title">Today</div>
+            <div id="today-content"></div>
         </div>
-        <div id="tomorrow-box">
-            <div class="day-label" id="tm-lab">Tomorrow</div>
-            <div id="tm-list"></div>
+
+        <div class="day-section" style="margin-top: 20px;">
+            <div class="section-header" id="tomorrow-title">Tomorrow</div>
+            <div id="tomorrow-content"></div>
         </div>
     </div>
 
     <div id="cal-view" class="view">
-        <div class="month-header" id="m-name">April 2026</div>
-        <div class="cal-grid" id="calendar">
-            <div class="cal-head">SUN</div><div class="cal-head">MON</div><div class="cal-head">TUE</div><div class="cal-head">WED</div><div class="cal-head">THU</div><div class="cal-head">FRI</div><div class="cal-head">SAT</div>
+        <div class="month-label" id="current-month">April 2026</div>
+        <div class="cal-wrapper">
+            <div class="cal-grid" id="calendar-body">
+                <div class="cal-h">SUN</div><div class="cal-h">MON</div><div class="cal-h">TUE</div><div class="cal-h">WED</div><div class="cal-h">THU</div><div class="cal-h">FRI</div><div class="cal-h">SAT</div>
+            </div>
         </div>
     </div>
 </main>
 
 <nav>
-    <button class="nav-it active" onclick="show('sched-view', this)">Schedule<div class="dot"></div></button>
-    <button class="nav-it" onclick="show('cal-view', this)">Calendar<div class="dot"></div></button>
+    <button class="nav-link active" onclick="tab('sched-view', this)">Schedule<div class="nav-indicator"></div></button>
+    <button class="nav-link" onclick="tab('cal-view', this)">Calendar<div class="nav-indicator"></div></button>
 </nav>
 
 <script>
-    const SHEET_URL = "YOUR_CSV_LINK_HERE";
-    let filter = "All";
+    const SHEET_URL = "PASTE_YOUR_CSV_LINK_HERE";
+    let activeFilter = "All";
 
-    // Mapped your schedule correctly
-    const data = {
-        1: [{c:'before', n:"Senior Symphony Orchestra", t:"7-8 AM", r:"101"}],
-        2: [{c:'before', n:"Junior Orchestra", t:"7-8 AM", r:"101"}, {c:'before', n:"Senior Band", t:"7-8 AM", r:"Stage"}, {c:'after', n:"Jazz Band", t:"3:30 PM", r:"101"}],
-        3: [{c:'before', n:"Senior Chamber Orchestra", t:"7-8 AM", r:"101"}],
-        4: [{c:'before', n:"Intermediate Orchestra", t:"7-8 AM", r:"101"}, {c:'before', n:"Junior Band", t:"7-8 AM", r:"Stage"}, {c:'lunch', n:"Junior Chamber", t:"Lunch", r:"101"}],
-        5: [{c:'before', n:"Senior Band", t:"7-8 AM", r:"Stage"}],
+    const schedule = {
+        1: [{c:'Before School', n:"Senior Symphony Orchestra", t:"7-8 AM", r:"126"}],
+        2: [{c:'Before School', n:"Junior Orchestra", t:"7-8 AM", r:"126"}, {c:'Before School', n:"Senior Band", t:"7-8 AM", r:"127"}, {c:'After School', n:"Jazz Band", t:"3:30 PM", r:"127"}],
+        3: [{c:'Before School', n:"Senior Chamber Orchestra", t:"7-8 AM", r:"126"}],
+        4: [{c:'Before School', n:"Intermediate Orchestra", t:"7-8 AM", r:"126"}, {c:'Before School', n:"Junior Band", t:"7-8 AM", r:"127"}, {c:'During Lunch', n:"Junior Chamber", t:"Lunch", r:"126"}],
+        5: [{c:'Before School', n:"Senior Band", t:"7-8 AM", r:"127"}],
         0:[], 6:[]
     };
 
-    // Add your dates here for the grid
-    const events = {
+    const monthlyEvents = {
         18: ["Symphony Night"],
         24: ["Jazz Fundraiser"]
     };
 
-    function renderSched(day, target) {
-        const list = document.getElementById(target);
-        let items = data[day] || [];
-        if(filter !== "All") items = items.filter(i => i.n.includes(filter));
-        
-        if(!items.length) { list.innerHTML = '<p class="cat-label">No Rehearsals</p>'; return; }
-        
-        list.innerHTML = items.map(i => `
-            <div class="cat-label">${i.c}</div>
+    function renderList(day, targetId) {
+        const target = document.getElementById(targetId);
+        let items = schedule[day] || [];
+        if(activeFilter !== "All") items = items.filter(i => i.n.includes(activeFilter));
+
+        if(items.length === 0) { target.innerHTML = '<p style="color:#9CA3AF; font-size:13px; font-style:italic; padding:10px;">No rehearsals scheduled</p>'; return; }
+
+        target.innerHTML = items.map(i => `
+            <div class="time-cat">${i.c}</div>
             <div class="card">
-                <div><h3>${i.n}</h3><p>Room ${i.r}</p></div>
-                <div class="time">${i.t}</div>
+                <div class="card-info"><h3>${i.n}</h3><p>Room ${i.r}</p></div>
+                <div class="pill">${i.t}</div>
             </div>
         `).join('');
     }
 
-    function initCal() {
+    function buildCalendar() {
         const now = new Date();
-        const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-        const grid = document.getElementById('calendar');
+        const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+        const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const grid = document.getElementById('calendar-body');
         
-        // Clear old cells (keep headers)
         while(grid.children.length > 7) grid.removeChild(grid.lastChild);
-
-        // Fill blanks
-        for(let i=0; i<first; i++) grid.innerHTML += '<div class="cal-cell"></div>';
+        for(let i=0; i<startDay; i++) grid.innerHTML += '<div class="cal-d"></div>';
         
-        // Fill dates
-        for(let d=1; d<=daysInMonth; d++) {
+        for(let d=1; d<=totalDays; d++) {
             const isToday = d === now.getDate() ? 'today' : '';
-            let evHTML = (events[d] || []).map(e => `<div class="cal-ev">${e}</div>`).join('');
-            grid.innerHTML += `<div class="cal-cell ${isToday}"><span class="cal-num">${d}</span>${evHTML}</div>`;
+            const evs = (monthlyEvents[d] || []).map(e => `<span class="cal-tag">${e}</span>`).join('');
+            grid.innerHTML += `<div class="cal-d ${isToday}"><span class="cal-num">${d}</span>${evs}</div>`;
         }
     }
 
-    function filterBy(f) {
-        filter = f;
+    function setFilter(f) {
+        activeFilter = f;
         document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.innerText.includes(f)));
-        init();
+        refresh();
     }
 
-    function show(v, btn) {
-        document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
-        document.getElementById(v).classList.add('active');
-        document.querySelectorAll('.nav-it').forEach(n => n.classList.remove('active'));
+    function tab(id, btn) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         btn.classList.add('active');
     }
 
-    function init() {
+    function refresh() {
         const d = new Date();
-        const names = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-        document.getElementById('t-lab').innerText = `Today (${names[d.getDay()]})`;
-        document.getElementById('tm-lab').innerText = `Tomorrow (${names[(d.getDay()+1)%7]})`;
-        renderSched(d.getDay(), 't-list');
-        renderSched((d.getDay()+1)%7, 'tm-list');
-        initCal();
+        const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        document.getElementById('today-title').innerText = `Today (${days[d.getDay()]})`;
+        document.getElementById('tomorrow-title').innerText = `Tomorrow (${days[(d.getDay()+1)%7]})`;
+        renderList(d.getDay(), 'today-content');
+        renderList((d.getDay()+1)%7, 'tomorrow-content');
+        buildCalendar();
     }
 
-    init();
+    refresh();
 </script>
 </body>
 </html>
