@@ -1,238 +1,450 @@
-# RachelRayna
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Music Portal</title>
+    <title>Central High Music - Powered by Student Tech</title>
     <style>
+        /* --- 1. Apple-Style Design Principles (Clean, White, Fast) --- */
         :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #38bdf8;
-            --accent-secondary: #c084fc;
-            --text: #f8fafc;
+            --apple-white: #f5f5f7; /* Very light grey for background */
+            --apple-off-white: #fafafa; /* Lighter white for text cards */
+            --apple-black: #1d1d1f; /* Primary text */
+            --apple-grey: #86868b; /* Secondary text */
+            --apple-blue: #0071e3; /* Accent color */
+            --apple-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --apple-ease: cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            background-color: var(--apple-white);
+            color: var(--apple-black);
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .phone-container {
+        /* Container constraint for phone feel */
+        .app-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
+            margin: 0 auto;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
-            padding-bottom: 80px; /* Space for nav */
+            position: relative;
         }
 
-        h1, h2 { color: var(--accent); }
+        /* Typography */
+        h1, h2, h3, h4 { color: var(--apple-black); margin-top: 0; font-weight: 700; }
+        p { color: var(--apple-grey); margin-bottom: 20px; }
+        
+        /* The stark white cards for results (Apple Spec Style) */
+        .card {
+            background-color: var(--apple-off-white);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--apple-shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: transform 0.2s var(--apple-ease);
+        }
+
+        /* --- 2. Interactive Selection Components --- */
+        
+        /* General hidden class */
         .hidden { display: none !important; }
 
-        /* UI Components */
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        select, button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 10px;
-            border-radius: 10px;
+        /* General Button Style (Like the "Buy" button) */
+        button.apple-btn {
+            background-color: var(--apple-blue);
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 980px;
             border: none;
-            font-size: 1rem;
-        }
-
-        button.primary {
-            background: var(--accent);
-            color: #000;
-            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 16px;
+        }
+        button.apple-btn:hover { background-color: #0077ed; }
+
+        /* Back Button */
+        button.apple-back-btn {
+            background: none;
+            color: var(--apple-grey);
+            font-size: 14px;
+            padding: 0;
+            cursor: pointer;
+            border: none;
+            text-decoration: underline;
         }
 
-        /* Nav Bar */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+        /* dropdown style */
+        select.apple-dropdown {
             width: 100%;
-            max-width: 450px;
-            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            appearance: none; /* remove default arrow */
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.3c0%204.8%201.8%209.1%205.4%2012.7l128%20128c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%2E');
+            background-repeat: no-repeat;
+            background-position: right 16px top 50%;
+            background-size: 10px auto;
+        }
+
+        /* --- 3. The Visual "Image-Cards" for Grade Selection --- */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* The main visual cards (Apple Hero-Nav style) */
+        .image-card {
+            background-color: white;
+            border-radius: 18px;
+            height: 200px;
+            padding: 24px;
             display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-item {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.8rem;
-            text-align: center;
-            opacity: 0.6;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
             cursor: pointer;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+            transition: all 0.3s var(--apple-ease);
         }
 
-        .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
-
-        /* List Styling */
-        .list-item {
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            border-color: var(--apple-blue);
         }
-        .list-item:last-child { border-bottom: none; }
-        .time-badge { color: var(--accent-secondary); font-weight: bold; font-size: 0.9rem; }
-        .event-title { font-size: 1.1rem; margin: 4px 0; }
-        .event-loc { font-size: 0.85rem; opacity: 0.7; }
+
+        /* Typography for the Grade Cards */
+        .image-card h2 { font-size: 36px; margin: 0; color: var(--apple-black); }
+        .image-card p { font-size: 16px; margin: 0; color: var(--apple-grey); }
+        .image-card .go-btn {
+            font-size: 14px;
+            color: var(--apple-blue);
+            font-weight: 600;
+        }
+
+        /* Using simple background images for representation.
+           *Replace with your actual images for a real project* */
+        .card-grade9 { background-image: linear-gradient(135deg, rgba(142, 68, 173, 0.1), #fff); }
+        .card-grade10 { background-image: linear-gradient(135deg, rgba(46, 204, 113, 0.1), #fff); }
+        .card-grade11 { background-image: linear-gradient(135deg, rgba(231, 76, 60, 0.1), #fff); }
+        .card-grade12 { background-image: linear-gradient(135deg, rgba(241, 196, 15, 0.1), #fff); }
+
+        /* --- 4. The Schedule Display (Clean List, Apple Tech Spec Style) --- */
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .schedule-item:last-child { border-bottom: none; }
+        
+        .ensemble-title { font-size: 1.2em; font-weight: 600; }
+        .details-wrapper { display: flex; flex-direction: column; text-align: right; }
+        .time { font-size: 1em; color: var(--apple-blue); font-weight: 600; }
+        .location { font-size: 0.85em; color: var(--apple-grey); }
+
+        /* Welcome header for the Personal Schedule Page */
+        .welcome-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+        .welcome-header h1 { font-size: 32px; font-weight: 800; color: var(--apple-black); }
+        .welcome-header p { font-size: 16px; color: var(--apple-grey); max-width: 80%; margin: 10px auto; }
+        .change-btn-wrapper { text-align: center; margin-bottom: 30px;}
+
     </style>
 </head>
 <body>
 
-    <div class="phone-container">
-        
-        <header style="text-align: center; margin-bottom: 30px;">
-            <h1 id="page-title">Music Portal</h1>
-        </header>
+    <div class="app-container">
 
-        <div id="page-setup" class="page">
-            <div class="card">
-                <h2>Welcome!</h2>
-                <p>Scan successful. Set your profile to see your specific schedule.</p>
-                
-                <label>Grade</label>
-                <select id="grade">
-                    <option value="9">Grade 9</option>
-                    <option value="10">Grade 10</option>
-                    <option value="11">Grade 11</option>
-                    <option value="12">Grade 12</option>
-                </select>
-
-                <label>Instrument</label>
-                <select id="instrument">
-                    <option value="piano">Piano</option>
-                    <option value="strings">Strings (Violin/Cello)</option>
-                    <option value="winds">Winds / Brass</option>
-                    <option value="percussion">Percussion</option>
-                </select>
-
-                <label>Ensemble</label>
-                <select id="ensemble">
-                    <option value="concert">Concert Band</option>
-                    <option value="jazz">Jazz Band</option>
-                    <option value="orchestra">Orchestra</option>
-                </select>
-
-                <button class="primary" onclick="showSchedule()">Find My Schedule</button>
-            </div>
+        <div id="main-nav-header" class="welcome-header">
+            <h1>Central Music</h1>
+            <p>Welcome to the official student portal. Get started by selecting your grade below.</p>
         </div>
 
-        <div id="page-schedule" class="page hidden">
-            <div class="card">
-                <h3 id="user-display">Your Schedule</h3>
-                <div id="schedule-list">
-                    </div>
-            </div>
-        </div>
-
-        <div id="page-events" class="page hidden">
-            <div class="card">
-                <h2>Upcoming Events</h2>
-                <p>Dances, concerts, and more.</p>
-                <div id="monthly-list">
-                    <div class="list-item">
-                        <div class="time-badge">MAY 15</div>
-                        <div class="event-title">Spring Music Night</div>
-                        <div class="event-loc">Auditorium @ 7:00 PM</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="time-badge">MAY 22</div>
-                        <div class="event-title">End of Year Dance</div>
-                        <div class="event-loc">Gymnasium @ 8:00 PM</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="time-badge">JUNE 05</div>
-                        <div class="event-title">Music Awards Banquet</div>
-                        <div class="event-loc">Cafeteria @ 6:00 PM</div>
-                    </div>
+        <div id="setup-section-grade" class="selection-grid">
+            
+            <div class="image-card card-grade9" onclick="selectGrade('9')">
+                <div>
+                    <h2>Grade 9</h2>
+                    <p>Winds, Percussion, Choir</p>
                 </div>
+                <span class="go-btn">Go ></span>
+            </div>
+
+            <div class="image-card card-grade10" onclick="selectGrade('10')">
+                <div>
+                    <h2>Grade 10</h2>
+                    <p>Concert & Jazz Band, Choir</p>
+                </div>
+                <span class="go-btn">Go ></span>
+            </div>
+
+            <div class="image-card card-grade11" onclick="selectGrade('11')">
+                <div>
+                    <h2>Grade 11</h2>
+                    <p>Symphonic Band, Orchestra</p>
+                </div>
+                <span class="go-btn">Go ></span>
+            </div>
+
+            <div class="image-card card-grade12" onclick="selectGrade('12')">
+                <div>
+                    <h2>Grade 12</h2>
+                    <p>Senior Leadership, Solos</p>
+                </div>
+                <span class="go-btn">Go ></span>
+            </div>
+
+        </div>
+
+        <div id="setup-section-instrument" class="hidden">
+            <div class="welcome-header" style="border: none;">
+                <button onclick="resetApp()" class="apple-back-btn">< Back</button>
+                <h1 style="margin-top: 10px;">Select Your Main Instrument</h1>
+                <p>Grade <span id="grade-confirm"></span>. Tell us what you play to filter your schedule.</p>
+            </div>
+            
+            <div class="card">
+                <label for="instrumentSelect" class="hidden">Instrument:</label>
+                <select id="instrumentSelect" class="apple-dropdown">
+                    <option value="">-- Choose Instrument --</option>
+                    <option value="flute">Flute</option>
+                    <option value="alto_sax">Alto Sax</option>
+                    <option value="trumpet">Trumpet</option>
+                    <option value="percussion">Percussion</option>
+                    <option value="voice">Voice (Choir)</option>
+                    <option value="violin">Violin</option>
+                </select>
+                
+                <button id="findScheduleBtn" class="apple-btn" style="margin-top: 24px; width: 100%;">See My Schedule</button>
             </div>
         </div>
 
-        <nav id="bottom-nav" class="nav-bar hidden">
-            <div class="nav-item active" onclick="switchPage('schedule')">Schedule</div>
-            <div class="nav-item" onclick="switchPage('events')">All Events</div>
-            <div class="nav-item" onclick="location.reload()">Reset</div>
-        </nav>
+        <div id="hub-section" class="hidden">
+            <div class="welcome-header">
+                <h1 id="user-heading">Hi Student!</h1>
+                <p>Welcome back to Central Music. Here is your personal rehearsal breakdown.</p>
+            </div>
+
+            <div class="change-btn-wrapper">
+                <button onclick="resetApp()" class="apple-btn" style="background-color: var(--apple-grey);">Change Grade/Instrument</button>
+            </div>
+
+            <div class="card">
+                <h2>Today's Priority</h2>
+                <div id="scheduleResults">
+                    </div>
+            </div>
+
+            <div class="card" style="border: none; background: none; box-shadow: none; text-align: center;">
+                <h4 style="font-weight: 500;">Upcoming General Events (Music Council, Dances)</h4>
+                <a href="#" style="color: var(--apple-blue);">Learn More ></a>
+            </div>
+        </div>
 
     </div>
 
     <script>
-        // DATA: You can edit this easily
-        const scheduleData = [
-            { grades: ['9','10'], inst: 'winds', ens: 'concert', title: 'Concert Band Rehearsal', time: '7:45 AM', room: '101' },
-            { grades: ['11','12'], inst: 'piano', ens: 'jazz', title: 'Jazz Rhythm Section', time: '3:30 PM', room: 'Stage' },
-            { grades: ['11','12'], inst: 'strings', ens: 'orchestra', title: 'Senior Strings', time: 'Lunch', room: '105' },
-            { grades: ['9','10','11','12'], inst: 'percussion', ens: 'concert', title: 'Percussion Sectional', time: '4:00 PM', room: '101' }
+        // --- A. THE CMS: The Master List of All Ensembles & Rehearsals ---
+        // You only need to edit this single list. The system will automatically handle duplicates.
+        // We use a powerful object-based structure.
+        const ensembleList = [
+            
+            // CONCERT BAND (Grades 9-10, all standard instruments)
+            {
+                name: "Concert Band",
+                applicableGrades: ["9", "10"],
+                applicableInstruments: ["flute", "alto_sax", "trumpet", "percussion"], // "all" would also work
+                time: "7:45 AM - 8:45 AM",
+                room: "Room 101"
+            },
+
+            // SYMPHONIC BAND (Grades 11-12, all standard instruments)
+            {
+                name: "Symphonic Band",
+                applicableGrades: ["11", "12"],
+                applicableInstruments: ["flute", "alto_sax", "trumpet", "percussion"],
+                time: "8:50 AM - 9:50 AM",
+                room: "Stage"
+            },
+
+            // JAZZ ENSEMBLE (All grades, restricted instruments)
+            {
+                name: "Jazz Ensemble (Auditioned)",
+                applicableGrades: ["all"],
+                applicableInstruments: ["alto_sax", "trumpet", "percussion"],
+                time: "3:30 PM - 5:00 PM",
+                room: "Room 101"
+            },
+
+            // CONCERT CHOIR (All grades, All instruments)
+            {
+                name: "Concert Choir",
+                applicableGrades: ["all"],
+                applicableInstruments: ["all"],
+                time: "Lunch (11:30 AM)",
+                room: "Room 105"
+            },
+
+            // JUNIOR STRINGS (Grade 9, Select Instruments)
+            {
+                name: "Junior Strings Sectional",
+                applicableGrades: ["9"],
+                applicableInstruments: ["violin"],
+                time: "Lunch (11:30 AM)",
+                room: "Room 106"
+            }
         ];
 
-        function showSchedule() {
-            const grade = document.getElementById('grade').value;
-            const inst = document.getElementById('instrument').value;
-            const ens = document.getElementById('ensemble').value;
+        // --- B. The Filtering Logic & Flow ---
 
-            const matches = scheduleData.filter(s => 
-                s.grades.includes(grade) && s.inst === inst && s.ens === ens
-            );
+        // Local Storage Variable: We will store their choices to keep them on the results page after refresh
+        const storageKeyGrade = 'centralMusicStudent_Grade';
+        const storageKeyInstrument = 'centralMusicStudent_Instrument';
 
-            const list = document.getElementById('schedule-list');
-            list.innerHTML = '';
+        // Get references
+        const mainHeader = document.getElementById('main-nav-header');
+        const setupGrade = document.getElementById('setup-section-grade');
+        const setupInstrument = document.getElementById('setup-section-instrument');
+        const hubSection = document.getElementById('hub-section');
+        const instrumentSelect = document.getElementById('instrumentSelect');
+        const gradeConfirm = document.getElementById('grade-confirm');
+        const userHeading = document.getElementById('user-heading');
+        const scheduleResults = document.getElementById('scheduleResults');
 
-            if(matches.length === 0) {
-                list.innerHTML = '<p>No rehearsals found for your specific selection today.</p>';
+        // State variables
+        let currentSelectedGrade = localStorage.getItem(storageKeyGrade) || null;
+        let currentSelectedInstrument = localStorage.getItem(storageKeyInstrument) || null;
+
+        // --- C. The Event Handlers & Page Navigation ---
+
+        // STEP 1: Grade Selection
+        function selectGrade(grade) {
+            currentSelectedGrade = grade;
+            localStorage.setItem(storageKeyGrade, grade); // Remember the choice
+
+            // Show confirmation UI
+            gradeConfirm.textContent = grade;
+            setupGrade.classList.add('hidden');
+            setupInstrument.classList.remove('hidden');
+        }
+
+        // STEP 2: Instrument Selection (final step)
+        document.getElementById('findScheduleBtn').addEventListener('click', function() {
+            const instrument = instrumentSelect.value;
+            
+            if (!instrument) {
+                alert("Please select your main instrument.");
+                return;
+            }
+
+            currentSelectedInstrument = instrument;
+            localStorage.setItem(storageKeyInstrument, instrument); // Remember the choice
+
+            // Flow to the final page
+            showFinalHub();
+        });
+
+        // --- D. THE CORE: Showing and Filtering the Data ---
+        
+        function showFinalHub() {
+            // Hide everything else
+            mainHeader.classList.add('hidden');
+            setupGrade.classList.add('hidden');
+            setupInstrument.classList.add('hidden');
+            hubSection.classList.remove('hidden');
+
+            // Update user greeting
+            // Use the readable name from the dropdown
+            const readableInstName = instrumentSelect.options[instrumentSelect.selectedIndex].text;
+            userHeading.textContent = `Hi Grade ${currentSelectedGrade} ${readableInstName}`;
+
+            // --- THE ADVANCED FILTER: This replaces the old complicated list logic ---
+            // We search through our *single master list* (ensembleList) 
+            // and pull only the ones that match their grade AND their instrument.
+            
+            const relevantEnsembles = ensembleList.filter(ensemble => {
+                // Logic: Does the grade list match? OR is it "all"?
+                const gradeMatch = (ensemble.applicableGrades.includes("all") || ensemble.applicableGrades.includes(currentSelectedGrade));
+
+                // Logic: Does the instrument list match? OR is it "all"?
+                const instrumentMatch = (ensemble.applicableInstruments.includes("all") || ensemble.applicableInstruments.includes(currentSelectedInstrument));
+
+                return (gradeMatch && instrumentMatch);
+            });
+
+            // Clean previous results
+            scheduleResults.innerHTML = '';
+
+            // Handle "No Rehearsals" case
+            if (relevantEnsembles.length === 0) {
+                scheduleResults.innerHTML = '<p style="text-align: center; opacity: 0.7;">No priority rehearsals scheduled for your selection today.</p>';
             } else {
-                matches.forEach(m => {
-                    list.innerHTML += `
-                        <div class="list-item">
-                            <div class="time-badge">${m.time}</div>
-                            <div class="event-title">${m.title}</div>
-                            <div class="event-loc">Room ${m.room}</div>
+                // Loop through and build the Apple-Style Tech Spec cards
+                relevantEnsembles.forEach(ensemble => {
+                    scheduleResults.innerHTML += `
+                        <div class="schedule-item">
+                            <div class="ensemble-title">${ensemble.name}</div>
+                            <div class="details-wrapper">
+                                <span class="time">${ensemble.time}</span>
+                                <span class="location">${ensemble.room}</span>
+                            </div>
                         </div>
                     `;
                 });
             }
-
-            document.getElementById('user-display').innerText = `Grade ${grade} ${inst.charAt(0).toUpperCase() + inst.slice(1)}`;
-            switchPage('schedule');
-            document.getElementById('bottom-nav').classList.remove('hidden');
         }
 
-        function switchPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            // Show selected
-            document.getElementById('page-' + pageId).classList.remove('hidden');
-            
-            // Update Nav styling
-            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
-            if(pageId === 'schedule') document.querySelectorAll('.nav-item')[0].classList.add('active');
-            if(pageId === 'events') document.querySelectorAll('.nav-item')[1].classList.add('active');
-
-            // Update Header
-            document.getElementById('page-title').innerText = pageId === 'events' ? 'School Events' : 'My Schedule';
+        // --- E. The Reset Functionality ---
+        function resetApp() {
+            localStorage.removeItem(storageKeyGrade);
+            localStorage.removeItem(storageKeyInstrument);
+            currentSelectedGrade = null;
+            currentSelectedInstrument = null;
+            instrumentSelect.value = ""; // reset dropdown
+            location.reload(); // simple page refresh to return to state zero
         }
+
+        // --- F. The Initialization (Check if they are returning) ---
+        // When the page loads, we check if they are already logged in via localStorage
+        function init() {
+            if (currentSelectedGrade && currentSelectedInstrument) {
+                // They are already "logged in", show the results immediately
+                showFinalHub();
+            } else if (currentSelectedGrade && !currentSelectedInstrument) {
+                // They picked a grade but not an instrument, show step 2
+                gradeConfirm.textContent = currentSelectedGrade;
+                setupGrade.classList.add('hidden');
+                setupInstrument.classList.remove('hidden');
+            }
+            // else: They are new, show Step 1 (Grade Selection)
+        }
+
+        init(); // Run immediately on load
+
     </script>
 </body>
 </html>
