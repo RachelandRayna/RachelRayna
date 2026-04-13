@@ -16,289 +16,154 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Header */
+        header { padding: 40px 20px 20px; text-align: center; border-bottom: 1px solid var(--purple-light); }
+        header h1 { font-size: 38px; margin: 0; color: var(--purple-main); font-weight: 800; }
+        header p { margin: 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 11px; letter-spacing: 3px; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        header {
-            padding: 40px 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--purple-light);
-        }
-
-        header h1 {
-            font-size: 38px;
-            margin: 0;
-            color: var(--purple-main);
-            font-weight: 800;
-            letter-spacing: -1.5px;
-        }
-
-        header p {
-            margin: 0;
-            color: var(--gold);
-            text-transform: uppercase;
-            font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 3px;
-        }
-
-        main {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 20px 100px;
-        }
-
-        .view { display: none; width: 100%; animation: fadeIn 0.3s ease; }
+        main { flex: 1; overflow-y: auto; padding: 0 20px 100px; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Calendar Styling */
+        .calendar-container { margin-top: 20px; }
+        .cal-item { display: flex; margin-bottom: 20px; background: var(--purple-light); border-radius: 15px; overflow: hidden; }
+        .cal-date { background: var(--purple-main); color: white; min-width: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; }
+        .cal-date .month { font-size: 10px; text-transform: uppercase; opacity: 0.8; }
+        .cal-date .day { font-size: 24px; }
+        .cal-info { padding: 15px; flex: 1; }
+        .cal-info h3 { margin: 0; font-size: 16px; color: var(--purple-main); }
+        .cal-info p { margin: 5px 0 0; font-size: 13px; color: var(--text-sub); }
 
-        .day-section { margin-top: 30px; }
-        .day-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--purple-main);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .day-title::after {
-            content: "";
-            flex: 1;
-            height: 2px;
-            background: var(--purple-light);
-            margin-left: 15px;
-        }
-
-        .time-block { margin-bottom: 25px; }
-        .time-label {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .ensemble-card {
-            background: var(--purple-light);
-            border-left: 4px solid var(--gold);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--card-shadow);
-        }
-
-        .ensemble-card h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--purple-main); }
-        .ensemble-card p { margin: 4px 0 0; font-size: 12px; color: var(--text-sub); }
-
-        .time-pill {
-            font-size: 11px;
-            font-weight: 700;
-            background: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            color: var(--purple-main);
-            border: 1px solid var(--purple-light);
-            white-space: nowrap;
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 85px;
-            background: white;
-            border-top: 1px solid var(--purple-light);
-            display: flex;
-            justify-content: space-around;
-            padding-top: 10px;
-            z-index: 1000;
-        }
-
-        .nav-btn {
-            background: none; border: none; color: var(--text-sub); font-weight: 600; font-size: 12px;
-            display: flex; flex-direction: column; align-items: center; cursor: pointer;
-        }
-
-        .nav-btn.active { color: var(--purple-main); }
-        .nav-icon { width: 24px; height: 24px; margin-bottom: 4px; background: currentColor; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
-
-        .icon-sched { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>'); }
-        .icon-event { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5zm4 4h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>'); }
-
-        .event-row { display: flex; padding: 20px 0; border-bottom: 1px solid var(--purple-light); align-items: center; }
-        .event-date { min-width: 50px; text-align: center; font-weight: 800; color: var(--gold); line-height: 1; }
-        .event-date span { display: block; font-size: 10px; color: var(--purple-main); }
-
+        /* Schedule Styling */
+        .day-title { font-size: 22px; font-weight: 800; color: var(--purple-main); margin: 30px 0 15px; display: flex; align-items: center; }
+        .day-title::after { content: ""; flex: 1; height: 2px; background: var(--purple-light); margin-left: 15px; }
+        .time-label { font-size: 11px; font-weight: 800; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .ensemble-card { background: var(--purple-light); border-left: 4px solid var(--gold); padding: 16px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--card-shadow); }
+        .time-pill { font-size: 11px; font-weight: 700; background: white; padding: 4px 10px; border-radius: 20px; color: var(--purple-main); border: 1px solid var(--purple-light); }
         .empty-state { padding: 5px; color: var(--text-sub); font-style: italic; font-size: 12px; }
+
+        /* Nav */
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 85px; background: white; border-top: 1px solid var(--purple-light); display: flex; justify-content: space-around; padding-top: 10px; }
+        .nav-btn { background: none; border: none; color: var(--text-sub); font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .nav-btn.active { color: var(--purple-main); font-weight: 700; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>in tune</h1>
-        <p>Central Music Portal</p>
-    </header>
+<header>
+    <h1>in tune</h1>
+    <p>Central Music Portal</p>
+</header>
 
-    <main>
-        <div id="sched-view" class="view active">
-            <div class="day-section">
-                <div class="day-title" id="today-name">Today</div>
-                <div class="time-block">
-                    <span class="time-label">Before School</span>
-                    <div id="today-before-list"></div>
-                </div>
-                <div class="time-block">
-                    <span class="time-label">Lunch</span>
-                    <div id="today-lunch-list"></div>
-                </div>
-                <div class="time-block">
-                    <span class="time-label">After School</span>
-                    <div id="today-after-list"></div>
-                </div>
-            </div>
-
-            <div class="day-section">
-                <div class="day-title" id="tomorrow-name">Tomorrow</div>
-                <div class="time-block">
-                    <span class="time-label">Before School</span>
-                    <div id="tomorrow-before-list"></div>
-                </div>
-                <div class="time-block">
-                    <span class="time-label">Lunch</span>
-                    <div id="tomorrow-lunch-list"></div>
-                </div>
-                <div class="time-block">
-                    <span class="time-label">After School</span>
-                    <div id="tomorrow-after-list"></div>
-                </div>
-            </div>
+<main>
+    <div id="sched-view" class="view active">
+        <div class="day-section">
+            <div class="day-title" id="today-name">Today</div>
+            <div id="today-list"></div>
         </div>
-
-        <div id="event-view" class="view">
-            <div class="day-section">
-                <div class="day-title">Events Overview</div>
-                <div class="event-row">
-                    <div class="event-date">??<span>APR</span></div>
-                    <div style="margin-left: 20px;">
-                        <h3 style="margin:0; font-size:16px;">Coming Soon</h3>
-                        <p style="margin:4px 0 0; font-size:13px; color:var(--text-sub);">Stay tuned for monthly updates.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="day-section">
+            <div class="day-title" id="tomorrow-name">Tomorrow</div>
+            <div id="tomorrow-list"></div>
         </div>
-    </main>
+    </div>
 
-    <nav class="nav-bar">
-        <button class="nav-btn active" onclick="switchTab('sched-view', this)">
-            <div class="nav-icon icon-sched"></div>Schedule
-        </button>
-        <button class="nav-btn" onclick="switchTab('event-view', this)">
-            <div class="nav-icon icon-event"></div>Events
-        </button>
-    </nav>
+    <div id="event-view" class="view">
+        <div class="day-title">Monthly Calendar</div>
+        <div class="calendar-container" id="calendar-list">
+            <div class="cal-item">
+                <div class="cal-date"><span class="month">Apr</span><span class="day">18</span></div>
+                <div class="cal-info"><h3>Symphony Night</h3><p>Auditorium @ 7:00 PM</p></div>
+             </div>
+        </div>
+    </div>
+</main>
 
-    <script>
-        // UPDATED MASTER SCHEDULE
-        const weeklySchedule = {
-            1: { // Monday
-                before: [{ name: "Senior Symphony Orchestra", time: "7:00 - 8:00 AM", room: "Music Room" }],
-                lunch: [],
-                after: []
-            },
-            2: { // Tuesday
-                before: [
-                    { name: "Junior Orchestra", time: "7:00 - 8:00 AM", room: "Music Room" },
-                    { name: "Senior Band", time: "7:00 - 8:00 AM", room: "Stage" }
-                ],
-                lunch: [],
-                after: [{ name: "Jazz Band", time: "3:30 PM", room: "Music Room" }]
-            },
-            3: { // Wednesday
-                before: [{ name: "Senior Chamber Orchestra", time: "7:00 - 8:00 AM", room: "Music Room" }],
-                lunch: [],
-                after: []
-            },
-            4: { // Thursday
-                before: [
-                    { name: "Intermediate Orchestra", time: "7:00 - 8:00 AM", room: "Music Room" },
-                    { name: "Junior Band", time: "7:00 - 8:00 AM", room: "Stage" }
-                ],
-                lunch: [{ name: "Junior Chamber", time: "Lunch", room: "Music Room" }],
-                after: []
-            },
-            5: { // Friday
-                before: [{ name: "Senior Band", time: "7:00 - 8:00 AM", room: "Stage" }],
-                lunch: [],
-                after: []
-            },
-            0: { before: [], lunch: [], after: [] }, // Sunday
-            6: { before: [], lunch: [], after: [] }  // Saturday
-        };
+<nav class="nav-bar">
+    <button class="nav-btn active" onclick="switchTab('sched-view', this)">Schedule</button>
+    <button class="nav-btn" onclick="switchTab('event-view', this)">Events</button>
+</nav>
 
-        function renderDay(dayIndex, targetPrefix) {
-            const data = weeklySchedule[dayIndex];
-            const sections = ['before', 'lunch', 'after'];
+<script>
+    // PASTE YOUR GOOGLE SHEET CSV LINK HERE
+    const SHEET_URL = "REPLACE_THIS_WITH_YOUR_PUBLISHED_CSV_LINK";
+
+    async function fetchSchedule() {
+        if (SHEET_URL === "REPLACE_THIS_WITH_YOUR_PUBLISHED_CSV_LINK") {
+            console.log("Using built-in schedule. Connect Google Sheets for auto-updates!");
+            renderSchedule(defaultSchedule);
+            return;
+        }
+
+        try {
+            const response = await fetch(SHEET_URL);
+            const data = await response.text();
+            const rows = data.split('\n').slice(1); // Remove header
             
-            sections.forEach(sec => {
-                const list = document.getElementById(`${targetPrefix}-${sec}-list`);
-                if (data[sec].length === 0) {
-                    list.innerHTML = '<div class="empty-state">No rehearsals scheduled</div>';
-                } else {
-                    list.innerHTML = data[sec].map(item => `
-                        <div class="ensemble-card">
-                            <div>
-                                <h3>${item.name}</h3>
-                                <p>${item.room}</p>
-                            </div>
-                            <span class="time-pill">${item.time}</span>
-                        </div>
-                    `).join('');
-                }
+            const dynamicSchedule = { 0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[] };
+            
+            rows.forEach(row => {
+                const [day, cat, name, time, room] = row.split(',');
+                if(day) dynamicSchedule[day.trim()].push({ cat: cat.trim(), name: name.trim(), time: time.trim(), room: room.trim() });
             });
+            renderSchedule(dynamicSchedule);
+        } catch (e) {
+            console.error("Error loading sheet:", e);
         }
+    }
 
-        function updateSchedule() {
-            const today = new Date();
-            const tomorrow = new Date();
-            tomorrow.setDate(today.getDate() + 1);
+    const defaultSchedule = {
+        1: [{cat:'before', name:"Symphony Orchestra", time:"7:00-8:00 AM", room:"Music Room"}],
+        2: [{cat:'before', name:"Junior Orchestra", time:"7:00-8:00 AM", room:"Music Room"}, {cat:'before', name:"Senior Band", time:"7-8 AM", room:"Stage"}, {cat:'after', name:"Jazz Band", time:"3:30 PM", room:"Room 101"}],
+        3: [{cat:'before', name:"Senior Chamber Orchestra", time:"7:00-8:00 AM", room:"Music Room"}],
+        4: [{cat:'before', name:"Intermediate Orchestra", time:"7:00-8:00 AM", room:"Music Room"}, {cat:'before', name:"Junior Band", time:"7-8 AM", room:"Stage"}, {cat:'lunch', name:"Junior Chamber", time:"Lunch", room:"101"}],
+        5: [{cat:'before', name:"Senior Band", time:"7:00-8:00 AM", room:"Stage"}],
+        0:[], 6:[]
+    };
 
-            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            
-            document.getElementById('today-name').innerText = "Today (" + dayNames[today.getDay()] + ")";
-            document.getElementById('tomorrow-name').innerText = "Tomorrow (" + dayNames[tomorrow.getDay()] + ")";
-
-            renderDay(today.getDay(), 'today');
-            renderDay(tomorrow.getDay(), 'tomorrow');
+    function renderDay(data, containerId) {
+        const container = document.getElementById(containerId);
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div class="empty-state">No rehearsals scheduled</div>';
+            return;
         }
+        
+        container.innerHTML = ['before', 'lunch', 'after'].map(cat => {
+            const items = data.filter(i => i.cat === cat);
+            if (items.length === 0) return '';
+            return `<span class="time-label">${cat}</span>` + items.map(item => `
+                <div class="ensemble-card">
+                    <div><h3>${item.name}</h3><p>${item.room}</p></div>
+                    <span class="time-pill">${item.time}</span>
+                </div>
+            `).join('');
+        }).join('');
+    }
 
-        function switchTab(viewId, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelector('main').scrollTop = 0;
-        }
+    function renderSchedule(sched) {
+        const today = new Date().getDay();
+        const tomorrow = (today + 1) % 7;
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        
+        document.getElementById('today-name').innerText = `Today (${dayNames[today]})`;
+        document.getElementById('tomorrow-name').innerText = `Tomorrow (${dayNames[tomorrow]})`;
 
-        updateSchedule();
-    </script>
+        renderDay(sched[today], 'today-list');
+        renderDay(sched[tomorrow], 'tomorrow-list');
+    }
+
+    function switchTab(id, btn) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    fetchSchedule();
+</script>
 </body>
 </html>
