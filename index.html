@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>In Tune | Central Music</title>
+    <title>In Tune | Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,53 +17,64 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; letter-spacing: -0.01em; }
+        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; letter-spacing: -0.01em; overflow: hidden; }
 
-        header { padding: 45px 20px 15px; text-align: center; }
-        header h1 { font-size: 38px; margin: 0; color: var(--purple); font-weight: 800; letter-spacing: -0.04em; }
+        header { padding: 40px 20px 10px; text-align: center; flex-shrink: 0; }
+        header h1 { font-size: 36px; margin: 0; color: var(--purple); font-weight: 800; letter-spacing: -0.04em; }
         header p { margin: 2px 0 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 10px; letter-spacing: 0.3em; }
 
-        main { flex: 1; overflow-y: auto; padding: 0 20px 120px; }
+        main { flex: 1; overflow-y: auto; padding: 0 20px 100px; }
         .view { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .view.active { display: block; }
 
-        /* Typography & Grouping */
-        .page-title { font-size: 24px; font-weight: 800; margin: 30px 0 20px; color: var(--text-main); }
+        /* SPLIT SCREEN LAYOUT */
+        .split-container { display: flex; gap: 30px; margin-top: 20px; }
+        .split-col { flex: 1; min-width: 300px; }
+        
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column; gap: 10px; }
+        }
+
+        .page-title { font-size: 22px; font-weight: 800; margin: 20px 0 15px; color: var(--text-main); border-left: 4px solid var(--purple); padding-left: 12px; }
         .cat-group { margin-bottom: 24px; }
-        .cat-label { font-size: 11px; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; border-bottom: 1px solid var(--purple-light); padding-bottom: 4px; }
+        .cat-label { font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; display: block; opacity: 0.8; }
 
-        /* Card Design */
-        .card { background: var(--purple-light); border-radius: 14px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(109, 40, 217, 0.05); }
-        .card h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--purple); }
-        .card p { margin: 3px 0 0; font-size: 13px; color: var(--text-muted); font-weight: 500; }
-        .pill { font-size: 11px; font-weight: 700; background: white; padding: 6px 10px; border-radius: 8px; color: var(--purple); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        /* CLEANER CARDS (NO BOXES) */
+        .card { 
+            background: var(--purple-light); 
+            border-radius: 12px; 
+            padding: 16px; 
+            margin-bottom: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        .card h3 { margin: 0; font-size: 15px; font-weight: 700; color: var(--purple); }
+        .card p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .pill { font-size: 10px; font-weight: 700; background: white; padding: 5px 10px; border-radius: 6px; color: var(--purple); white-space: nowrap; }
 
-        /* Calendar Grid */
+        /* CALENDAR */
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; }
-        .cal-h { background: var(--purple-light); border-bottom: 1px solid var(--border); padding: 12px 0; text-align: center; font-size: 10px; font-weight: 800; color: var(--purple); }
-        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 85px; padding: 6px; position: relative; }
+        .cal-h { background: var(--purple-light); border-bottom: 1px solid var(--border); padding: 12px 0; text-align: center; font-size: 9px; font-weight: 800; color: var(--purple); }
+        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 80px; padding: 6px; }
         .cal-num { font-size: 11px; font-weight: 600; color: #9CA3AF; }
         .cal-d.today { background: #FAF9FF; }
-        .cal-d.today .cal-num { color: var(--purple); font-weight: 800; }
-        .cal-tag { background: var(--purple); color: white; font-size: 8px; padding: 2px 4px; border-radius: 4px; margin-top: 4px; display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+        .cal-tag { background: var(--purple); color: white; font-size: 8px; padding: 2px 4px; border-radius: 4px; margin-top: 4px; display: block; font-weight: 600; }
 
-        /* Placeholder/Empty State */
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
-        .empty-state i { font-size: 40px; display: block; margin-bottom: 10px; }
-
-        /* Bottom Navigation */
+        /* NAV */
         nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; height: 85px; 
-            background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
+            position: fixed; bottom: 0; left: 0; right: 0; height: 80px; 
+            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px);
             border-top: 1px solid var(--border); display: flex; justify-content: space-around; 
-            align-items: center; padding-bottom: 15px; z-index: 1000;
+            align-items: center; padding-bottom: 10px; z-index: 1000;
         }
-        .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.2s; cursor: pointer; }
+        .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .nav-btn.active { color: var(--purple); }
-        .nav-indicator { width: 14px; height: 3px; border-radius: 10px; background: transparent; }
+        .nav-indicator { width: 12px; height: 3px; border-radius: 10px; background: transparent; }
         .active .nav-indicator { background: var(--gold); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -75,14 +86,20 @@
 
 <main>
     <div id="view-sched" class="view active">
-        <div class="page-title" id="label-today">Today</div>
-        <div id="list-today"></div>
-        <div class="page-title" id="label-tomorrow">Tomorrow</div>
-        <div id="list-tomorrow"></div>
+        <div class="split-container">
+            <div class="split-col">
+                <div class="page-title" id="label-today">Today</div>
+                <div id="list-today"></div>
+            </div>
+            <div class="split-col">
+                <div class="page-title" id="label-tomorrow">Tomorrow</div>
+                <div id="list-tomorrow"></div>
+            </div>
+        </div>
     </div>
 
     <div id="view-cal" class="view">
-        <div class="page-title">April 2026</div>
+        <div class="page-title" id="month-name">Calendar</div>
         <div class="cal-grid" id="calendar-body">
             <div class="cal-h">SUN</div><div class="cal-h">MON</div><div class="cal-h">TUE</div><div class="cal-h">WED</div><div class="cal-h">THU</div><div class="cal-h">FRI</div><div class="cal-h">SAT</div>
         </div>
@@ -90,25 +107,19 @@
 
     <div id="view-res" class="view">
         <div class="page-title">Resources</div>
-        <div class="empty-state">
-            <p>Library is being updated.<br>Check back soon!</p>
+        <div style="text-align: center; padding: 50px; color: var(--text-muted); font-size: 14px;">
+            Content library is being curated.
         </div>
     </div>
 
     <div id="view-vol" class="view">
         <div class="page-title">Get Involved</div>
-        <div class="card" onclick="alert('Link to Sign-up Form')">
-            <div class="card-info">
-                <h3>Music Council</h3>
-                <p>Executive & Member Roles</p>
-            </div>
-            <div class="pill">Apply</div>
+        <div class="card">
+            <div class="card-info"><h3>Music Council</h3><p>Executive Roles</p></div>
+            <div class="pill">Info</div>
         </div>
-        <div class="card" onclick="alert('Link to Sign-up Form')">
-            <div class="card-info">
-                <h3>Concert Roadies</h3>
-                <p>Volunteer hours available</p>
-            </div>
+        <div class="card">
+            <div class="card-info"><h3>Volunteering</h3><p>Earn hours</p></div>
             <div class="pill">Sign Up</div>
         </div>
     </div>
@@ -157,14 +168,17 @@
         const container = document.getElementById(containerId);
         const dayData = schedule[day] || [];
         if (dayData.length === 0) {
-            container.innerHTML = '<p style="color:#9CA3AF; font-size:13px; font-style:italic; padding:10px;">Rest day — No rehearsals</p>';
+            container.innerHTML = '<p style="color:#9CA3AF; font-size:12px; font-style:italic; padding:10px;">No rehearsals scheduled</p>';
             return;
         }
 
-        const categories = ["Before School", "Lunch", "After School"];
+        // IMPROVED FUZZY GROUPING
+        const cats = ["Before School", "Lunch", "After School"];
         let html = '';
-        categories.forEach(label => {
-            const filtered = dayData.filter(i => i.cat.toLowerCase().includes(label.toLowerCase().split(' ').pop()));
+        cats.forEach(label => {
+            const keyword = label.toLowerCase().split(' ').pop(); // grabs "school" or "lunch"
+            const filtered = dayData.filter(i => i.cat.toLowerCase().includes(keyword));
+            
             if (filtered.length > 0) {
                 html += `<div class="cat-group"><span class="cat-label">${label}</span>`;
                 filtered.forEach(item => {
@@ -173,7 +187,7 @@
                 html += `</div>`;
             }
         });
-        container.innerHTML = html;
+        container.innerHTML = html || '<p style="color:#9CA3AF; font-size:12px;">No rehearsals scheduled</p>';
     }
 
     function buildCalendar() {
@@ -181,6 +195,8 @@
         const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
         const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
         const grid = document.getElementById('calendar-body');
+        document.getElementById('month-name').innerText = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+        
         while(grid.children.length > 7) grid.removeChild(grid.lastChild);
         for(let i=0; i<startDay; i++) grid.innerHTML += '<div class="cal-d"></div>';
         for(let d=1; d<=totalDays; d++) {
@@ -195,14 +211,13 @@
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(l => l.classList.remove('active'));
         btn.classList.add('active');
-        document.querySelector('main').scrollTop = 0;
     }
 
     function refreshUI() {
         const d = new Date();
         const names = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-        document.getElementById('label-today').innerText = `Today, ${names[d.getDay()]}`;
-        document.getElementById('label-tomorrow').innerText = `Tomorrow, ${names[(d.getDay()+1)%7]}`;
+        document.getElementById('label-today').innerText = names[d.getDay()];
+        document.getElementById('label-tomorrow').innerText = names[(d.getDay()+1)%7];
         renderDay(d.getDay(), 'list-today');
         renderDay((d.getDay()+1)%7, 'list-tomorrow');
         buildCalendar();
