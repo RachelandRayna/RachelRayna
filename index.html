@@ -1,117 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>In Tune | Music Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --purple-dark: #6D28D9;
-            --purple-mid: #A78BFA;
-            --purple-bg: #F5F3FF;
-            --gold: #D4AF37;
-            --gold-soft: #FDF9EC;
-            --white: #FFFFFF;
-            --text: #1F2937;
-            --border: #E5E7EB;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--white); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
-
-        /* Header */
-        header { padding: 45px 20px 20px; text-align: center; }
-        header h1 { font-size: 40px; margin: 0; color: var(--purple-dark); font-weight: 800; letter-spacing: -1.5px; }
-        header p { margin: 2px 0 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 11px; letter-spacing: 3px; }
-
-        main { flex: 1; overflow-y: auto; padding: 0 15px 100px; }
-        .view { display: none; animation: fadeIn 0.3s ease; }
-        .view.active { display: block; }
-
-        /* Filter Chips */
-        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 15px 0; scrollbar-width: none; }
-        .chip { padding: 10px 18px; background: var(--purple-bg); border-radius: 25px; font-size: 12px; font-weight: 700; color: var(--purple-dark); white-space: nowrap; border: 1.5px solid transparent; transition: 0.2s; }
-        .chip.active { background: var(--purple-dark); color: white; }
-
-        /* Schedule Cards */
-        .section-header { font-size: 22px; font-weight: 800; margin: 25px 0 15px; color: var(--text); }
-        .time-cat { font-size: 10px; color: var(--gold); font-weight: 800; text-transform: uppercase; margin: 18px 0 6px; letter-spacing: 1px; }
-        .card { background: var(--purple-bg); border-radius: 16px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--purple-mid); }
-        .card-info h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--purple-dark); }
-        .card-info p { margin: 4px 0 0; font-size: 13px; color: var(--text); opacity: 0.7; }
-        .pill { font-size: 11px; font-weight: 700; background: var(--white); padding: 6px 12px; border-radius: 10px; color: var(--purple-dark); border: 1px solid var(--purple-mid); }
-
-        /* Calendar Grid */
-        .month-label { font-size: 20px; font-weight: 800; text-align: center; margin: 20px 0; color: var(--purple-dark); }
-        .cal-wrapper { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--white); }
-        .cal-h { background: var(--purple-bg); border-bottom: 1px solid var(--border); padding: 10px 0; text-align: center; font-size: 10px; font-weight: 800; color: var(--purple-dark); }
-        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 80px; padding: 6px; background: var(--white); position: relative; }
-        .cal-d:nth-child(7n) { border-right: none; }
-        .cal-num { font-size: 12px; font-weight: 600; color: #9CA3AF; }
-        .cal-d.today { background: var(--gold-soft); }
-        .cal-d.today .cal-num { color: var(--gold); font-weight: 800; }
-        .cal-tag { background: var(--purple-dark); color: white; font-size: 8px; padding: 2px 4px; border-radius: 4px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; display: block; }
-
-        /* Nav */
-        nav { position: fixed; bottom: 0; left: 0; right: 0; height: 85px; background: var(--white); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; }
-        .nav-link { border: none; background: none; color: #9CA3AF; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
-        .nav-link.active { color: var(--purple-dark); }
-        .nav-indicator { width: 12px; height: 3px; border-radius: 10px; background: transparent; }
-        .active .nav-indicator { background: var(--gold); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1>In Tune</h1>
-    <p>Central Music Portal</p>
-</header>
-
-<main>
-    <div id="sched-view" class="view active">
-        <div class="filter-scroll">
-            <div class="chip active" onclick="setFilter('All')">All Ensembles</div>
-            <div class="chip" onclick="setFilter('Symphony')">Symphony</div>
-            <div class="chip" onclick="setFilter('Orchestra')">Orchestra</div>
-            <div class="chip" onclick="setFilter('Band')">Band</div>
-            <div class="chip" onclick="setFilter('Jazz')">Jazz</div>
-        </div>
-        
-        <div class="day-section">
-            <div class="section-header" id="today-title">Today</div>
-            <div id="today-content"></div>
-        </div>
-
-        <div class="day-section" style="margin-top: 20px;">
-            <div class="section-header" id="tomorrow-title">Tomorrow</div>
-            <div id="tomorrow-content"></div>
-        </div>
-    </div>
-
-    <div id="cal-view" class="view">
-        <div class="month-label" id="current-month">April 2026</div>
-        <div class="cal-wrapper">
-            <div class="cal-grid" id="calendar-body">
-                <div class="cal-h">SUN</div><div class="cal-h">MON</div><div class="cal-h">TUE</div><div class="cal-h">WED</div><div class="cal-h">THU</div><div class="cal-h">FRI</div><div class="cal-h">SAT</div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<nav>
-    <button class="nav-link active" onclick="tab('sched-view', this)">Schedule<div class="nav-indicator"></div></button>
-    <button class="nav-link" onclick="tab('cal-view', this)">Calendar<div class="nav-indicator"></div></button>
-</nav>
-
 <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyU9Ns94s1Qj3QLmMpMahY3TKvYEtZsOe-KIHw7yEU82gJDTgLrMELkzGZRPSKvmjWg-Y_X0NDfgNL/pub?gid=317537579&single=true&output=csv";
     let activeFilter = "All";
-
-    const schedule = {
+    
+    // This starts as your "Backup" schedule in case the link fails
+    let schedule = {
         1: [{c:'Before School', n:"Senior Symphony Orchestra", t:"7-8 AM", r:"126"}],
         2: [{c:'Before School', n:"Junior Orchestra", t:"7-8 AM", r:"126"}, {c:'Before School', n:"Senior Band", t:"7-8 AM", r:"127"}, {c:'After School', n:"Jazz Band", t:"3:30 PM", r:"127"}],
         3: [{c:'Before School', n:"Senior Chamber Orchestra", t:"7-8 AM", r:"126"}],
@@ -125,12 +17,55 @@
         24: ["Jazz Fundraiser"]
     };
 
+    // --- NEW ENGINE START ---
+    async function loadSheetData() {
+        try {
+            const response = await fetch(SHEET_URL);
+            const csvText = await response.text();
+            
+            // This cleans up the CSV and splits it into rows
+            const rows = csvText.split(/\r?\n/).slice(1); 
+            const newSched = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[]};
+
+            rows.forEach(row => {
+                // Split by commas but ignore commas inside quotes
+                const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
+                if (columns.length >= 5) {
+                    const dayNum = columns[0].replace(/"/g, "").trim();
+                    if (newSched[dayNum]) {
+                        newSched[dayNum].push({
+                            c: columns[1].replace(/"/g, "").trim(), // Category
+                            n: columns[2].replace(/"/g, "").trim(), // Name
+                            t: columns[3].replace(/"/g, "").trim(), // Time
+                            r: columns[4].replace(/"/g, "").trim()  // Room
+                        });
+                    }
+                }
+            });
+
+            // If we got data, replace the backup schedule
+            schedule = newSched;
+            refresh();
+        } catch (error) {
+            console.error("Link error or Sheet not published. Using backup.");
+            refresh();
+        }
+    }
+    // --- NEW ENGINE END ---
+
     function renderList(day, targetId) {
         const target = document.getElementById(targetId);
         let items = schedule[day] || [];
-        if(activeFilter !== "All") items = items.filter(i => i.n.includes(activeFilter));
+        
+        if(activeFilter !== "All") {
+            items = items.filter(i => i.n.toLowerCase().includes(activeFilter.toLowerCase()));
+        }
 
-        if(items.length === 0) { target.innerHTML = '<p style="color:#9CA3AF; font-size:13px; font-style:italic; padding:10px;">No rehearsals scheduled</p>'; return; }
+        if(items.length === 0) { 
+            target.innerHTML = '<p style="color:#9CA3AF; font-size:13px; font-style:italic; padding:10px;">No rehearsals scheduled</p>'; 
+            return; 
+        }
 
         target.innerHTML = items.map(i => `
             <div class="time-cat">${i.c}</div>
@@ -180,7 +115,6 @@
         buildCalendar();
     }
 
-    refresh();
+    // This calls the sheet data as soon as the page loads
+    loadSheetData(); 
 </script>
-</body>
-</html>
