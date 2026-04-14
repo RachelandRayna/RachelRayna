@@ -111,9 +111,13 @@
         const container = document.getElementById(id);
         const data = store.schedule[dayNum] || [];
         if(!data.length) { container.innerHTML = '<p style="color:#9CA3AF;font-size:12px;">No rehearsals scheduled</p>'; return; }
+        
         let html = '';
+        // KEY CHANGE HERE: We look for "Before", "Lunch", or "After" specifically
         ["Before School", "Lunch", "After School"].forEach(label => {
-            const items = data.filter(i => i.cat && i.cat.toLowerCase().includes(label.toLowerCase().split(' ').pop()));
+            const firstWord = label.toLowerCase().split(' ')[0]; // gets "before", "lunch", or "after"
+            const items = data.filter(i => i.cat && i.cat.toLowerCase().includes(firstWord));
+            
             if(items.length) {
                 html += `<span class="cat-label">${label}</span>`;
                 items.forEach(i => html += `<div class="card"><div><h3>${i.name}</h3><p>Room ${i.room}</p></div><div class="pill">${i.time}</div></div>`);
@@ -153,3 +157,4 @@
 </script>
 </body>
 </html>
+
