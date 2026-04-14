@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>In Tune | Music Portal</title>
+    <title>In Tune | Central Music</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,77 +11,59 @@
             --purple-light: #F5F3FF;
             --gold: #D4AF37;
             --bg: #FFFFFF;
-            --text-main: #1F2937;
+            --text-main: #111827;
             --text-muted: #6B7280;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --border: #F3F4F6;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; letter-spacing: -0.01em; }
 
-        header { padding: 50px 20px 20px; text-align: center; }
-        header h1 { font-size: 42px; margin: 0; color: var(--purple); font-weight: 800; letter-spacing: -2px; }
-        header p { margin: 2px 0 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 11px; letter-spacing: 4px; }
+        header { padding: 45px 20px 15px; text-align: center; }
+        header h1 { font-size: 38px; margin: 0; color: var(--purple); font-weight: 800; letter-spacing: -0.04em; }
+        header p { margin: 2px 0 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 10px; letter-spacing: 0.3em; }
 
         main { flex: 1; overflow-y: auto; padding: 0 20px 120px; }
-        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .view.active { display: block; }
 
-        /* Grouping Style */
-        .day-header { font-size: 24px; font-weight: 800; margin: 35px 0 15px; color: var(--text-main); }
-        .category-group { margin-bottom: 25px; }
-        .category-label { 
-            font-size: 11px; font-weight: 800; color: var(--gold); 
-            text-transform: uppercase; letter-spacing: 1.5px; 
-            margin-bottom: 12px; display: block;
-            border-bottom: 1px solid var(--purple-light);
-            padding-bottom: 4px;
-        }
+        /* Typography & Grouping */
+        .page-title { font-size: 24px; font-weight: 800; margin: 30px 0 20px; color: var(--text-main); }
+        .cat-group { margin-bottom: 24px; }
+        .cat-label { font-size: 11px; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; border-bottom: 1px solid var(--purple-light); padding-bottom: 4px; }
 
-        /* Borderless Floating Cards */
-        .card { 
-            background: var(--purple-light); 
-            border-radius: 12px; 
-            padding: 16px; 
-            margin-bottom: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: var(--card-shadow);
-        }
-        .card-info h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--purple); }
-        .card-info p { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
-        .pill { font-size: 11px; font-weight: 700; background: white; padding: 5px 10px; border-radius: 8px; color: var(--purple); }
+        /* Card Design */
+        .card { background: var(--purple-light); border-radius: 14px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(109, 40, 217, 0.05); }
+        .card h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--purple); }
+        .card p { margin: 3px 0 0; font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .pill { font-size: 11px; font-weight: 700; background: white; padding: 6px 10px; border-radius: 8px; color: var(--purple); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 
-        /* Resources Styling */
-        .resource-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--purple-light);
-            display: block;
-            text-decoration: none;
-            transition: transform 0.2s ease;
-        }
-        .resource-card:active { transform: scale(0.98); }
-        .resource-card h3 { margin: 0; font-size: 18px; color: var(--purple); }
-        .resource-card p { margin: 5px 0 0; font-size: 14px; color: var(--text-muted); }
+        /* Calendar Grid */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; }
+        .cal-h { background: var(--purple-light); border-bottom: 1px solid var(--border); padding: 12px 0; text-align: center; font-size: 10px; font-weight: 800; color: var(--purple); }
+        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 85px; padding: 6px; position: relative; }
+        .cal-num { font-size: 11px; font-weight: 600; color: #9CA3AF; }
+        .cal-d.today { background: #FAF9FF; }
+        .cal-d.today .cal-num { color: var(--purple); font-weight: 800; }
+        .cal-tag { background: var(--purple); color: white; font-size: 8px; padding: 2px 4px; border-radius: 4px; margin-top: 4px; display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Bottom Nav */
+        /* Placeholder/Empty State */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 40px; display: block; margin-bottom: 10px; }
+
+        /* Bottom Navigation */
         nav { 
             position: fixed; bottom: 0; left: 0; right: 0; height: 85px; 
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid #F3F4F6; display: flex; justify-content: space-around; 
-            align-items: center; padding-bottom: 15px; z-index: 100;
+            background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-around; 
+            align-items: center; padding-bottom: 15px; z-index: 1000;
         }
-        .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.2s; cursor: pointer; }
         .nav-btn.active { color: var(--purple); }
-        .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: transparent; }
-        .active .nav-dot { background: var(--gold); }
+        .nav-indicator { width: 14px; height: 3px; border-radius: 10px; background: transparent; }
+        .active .nav-indicator { background: var(--gold); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -92,46 +74,60 @@
 </header>
 
 <main>
-    <div id="sched-view" class="view active">
-        <div class="day-header" id="today-title">Today</div>
-        <div id="today-container"></div>
-        
-        <div class="day-header" id="tomorrow-title">Tomorrow</div>
-        <div id="tomorrow-container"></div>
+    <div id="view-sched" class="view active">
+        <div class="page-title" id="label-today">Today</div>
+        <div id="list-today"></div>
+        <div class="page-title" id="label-tomorrow">Tomorrow</div>
+        <div id="list-tomorrow"></div>
     </div>
 
-    <div id="res-view" class="view">
-        <div class="day-header">Theory & Training</div>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Curated resources for RCM and class prep.</p>
-        
-        <a href="https://www.musictheory.net/exercises" class="resource-card" target="_blank">
-            <h3>musictheory.net</h3>
-            <p>Perfect for interval, chord, and note identification drills.</p>
-        </a>
+    <div id="view-cal" class="view">
+        <div class="page-title">April 2026</div>
+        <div class="cal-grid" id="calendar-body">
+            <div class="cal-h">SUN</div><div class="cal-h">MON</div><div class="cal-h">TUE</div><div class="cal-h">WED</div><div class="cal-h">THU</div><div class="cal-h">FRI</div><div class="cal-h">SAT</div>
+        </div>
+    </div>
 
-        <a href="https://www.teoria.com/" class="resource-card" target="_blank">
-            <h3>Teoria</h3>
-            <p>Advanced tutorials and ear training exercises.</p>
-        </a>
+    <div id="view-res" class="view">
+        <div class="page-title">Resources</div>
+        <div class="empty-state">
+            <p>Library is being updated.<br>Check back soon!</p>
+        </div>
+    </div>
 
-        <a href="https://tonedear.com/" class="resource-card" target="_blank">
-            <h3>Toned Ear</h3>
-            <p>Excellent for melodic dictation and perfect pitch practice.</p>
-        </a>
+    <div id="view-vol" class="view">
+        <div class="page-title">Get Involved</div>
+        <div class="card" onclick="alert('Link to Sign-up Form')">
+            <div class="card-info">
+                <h3>Music Council</h3>
+                <p>Executive & Member Roles</p>
+            </div>
+            <div class="pill">Apply</div>
+        </div>
+        <div class="card" onclick="alert('Link to Sign-up Form')">
+            <div class="card-info">
+                <h3>Concert Roadies</h3>
+                <p>Volunteer hours available</p>
+            </div>
+            <div class="pill">Sign Up</div>
+        </div>
     </div>
 </main>
 
 <nav>
-    <button class="nav-btn active" onclick="tab('sched-view', this)">SCHEDULE<div class="nav-dot"></div></button>
-    <button class="nav-btn" onclick="tab('res-view', this)">RESOURCES<div class="nav-dot"></div></button>
+    <button class="nav-btn active" onclick="switchTab('view-sched', this)">HOME<div class="nav-indicator"></div></button>
+    <button class="nav-btn" onclick="switchTab('view-cal', this)">CALENDAR<div class="nav-indicator"></div></button>
+    <button class="nav-btn" onclick="switchTab('view-res', this)">RESOURCES<div class="nav-indicator"></div></button>
+    <button class="nav-btn" onclick="switchTab('view-vol', this)">JOIN<div class="nav-indicator"></div></button>
 </nav>
 
 <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyU9Ns94s1Qj3QLmMpMahY3TKvYEtZsOe-KIHw7yEU82gJDTgLrMELkzGZRPSKvmjWg-Y_X0NDfgNL/pub?gid=317537579&single=true&output=csv";
     
     let schedule = { 0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[] };
+    const bigEvents = { 18: "Symphony Night", 24: "Variety Is" };
 
-    async function loadData() {
+    async function fetchData() {
         try {
             const response = await fetch(SHEET_URL);
             const csvText = await response.text();
@@ -153,58 +149,66 @@
                 }
             });
             schedule = newSched;
-            refresh();
-        } catch (e) { console.error(e); refresh(); }
+            refreshUI();
+        } catch (e) { console.error(e); refreshUI(); }
     }
 
-    function renderGrouped(day, containerId) {
+    function renderDay(day, containerId) {
         const container = document.getElementById(containerId);
         const dayData = schedule[day] || [];
-        
         if (dayData.length === 0) {
-            container.innerHTML = '<p style="color:#9CA3AF; font-size:13px; font-style:italic; padding:10px;">No rehearsals</p>';
+            container.innerHTML = '<p style="color:#9CA3AF; font-size:13px; font-style:italic; padding:10px;">Rest day — No rehearsals</p>';
             return;
         }
 
-        // Grouping logic: Before School, Lunch, After School
-        const categories = ["Before School", "Lunch", "During Lunch", "After School"];
+        const categories = ["Before School", "Lunch", "After School"];
         let html = '';
-
         categories.forEach(label => {
             const filtered = dayData.filter(i => i.cat.toLowerCase().includes(label.toLowerCase().split(' ').pop()));
             if (filtered.length > 0) {
-                html += `<div class="category-group"><span class="category-label">${label}</span>`;
+                html += `<div class="cat-group"><span class="cat-label">${label}</span>`;
                 filtered.forEach(item => {
-                    html += `
-                        <div class="card">
-                            <div class="card-info"><h3>${item.name}</h3><p>Room ${item.room}</p></div>
-                            <div class="pill">${item.time}</div>
-                        </div>
-                    `;
+                    html += `<div class="card"><div class="card-info"><h3>${item.name}</h3><p>Room ${item.room}</p></div><div class="pill">${item.time}</div></div>`;
                 });
                 html += `</div>`;
             }
         });
-        container.innerHTML = html || '<p style="color:#9CA3AF; font-size:13px; font-style:italic;">No rehearsals today</p>';
+        container.innerHTML = html;
     }
 
-    function tab(id, btn) {
+    function buildCalendar() {
+        const now = new Date();
+        const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+        const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const grid = document.getElementById('calendar-body');
+        while(grid.children.length > 7) grid.removeChild(grid.lastChild);
+        for(let i=0; i<startDay; i++) grid.innerHTML += '<div class="cal-d"></div>';
+        for(let d=1; d<=totalDays; d++) {
+            const isToday = d === now.getDate() ? 'today' : '';
+            const event = bigEvents[d] ? `<span class="cal-tag">${bigEvents[d]}</span>` : '';
+            grid.innerHTML += `<div class="cal-d ${isToday}"><span class="cal-num">${d}</span>${event}</div>`;
+        }
+    }
+
+    function switchTab(id, btn) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(l => l.classList.remove('active'));
         btn.classList.add('active');
+        document.querySelector('main').scrollTop = 0;
     }
 
-    function refresh() {
+    function refreshUI() {
         const d = new Date();
         const names = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-        document.getElementById('today-title').innerText = `Today (${names[d.getDay()]})`;
-        document.getElementById('tomorrow-title').innerText = `Tomorrow (${names[(d.getDay()+1)%7]})`;
-        renderGrouped(d.getDay(), 'today-container');
-        renderGrouped((d.getDay()+1)%7, 'tomorrow-container');
+        document.getElementById('label-today').innerText = `Today, ${names[d.getDay()]}`;
+        document.getElementById('label-tomorrow').innerText = `Tomorrow, ${names[(d.getDay()+1)%7]}`;
+        renderDay(d.getDay(), 'list-today');
+        renderDay((d.getDay()+1)%7, 'list-tomorrow');
+        buildCalendar();
     }
 
-    loadData();
+    fetchData();
 </script>
 </body>
 </html>
