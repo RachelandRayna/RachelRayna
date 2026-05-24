@@ -27,7 +27,7 @@
         .card p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); }
         .pill { font-size: 10px; font-weight: 700; background: white; padding: 5px 10px; border-radius: 6px; color: var(--purple); white-space: nowrap; }
 
-        /* IMPROVED CALENDAR FOR MULTIPLE EVENTS */
+        /* CALENDAR LAYOUT (SPREAD OUT AGAIN) */
         .cal-grid { 
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
@@ -35,21 +35,21 @@
             border-radius: 12px; 
             overflow: hidden; 
             background: #fff; 
-            max-width: 600px;     /* Limits the width of the calendar */
-            margin: 0 auto;       /* Centers the calendar container */
+            max-width: 900px;     /* Allowed to stretch much further */
+            margin: 0 auto;       
         }
         .cal-h { 
             background: var(--purple-light); 
             border-bottom: 1px solid var(--border); 
-            padding: 10px 0; 
+            padding: 12px 0; 
             text-align: center; 
-            font-size: 12px;      /* Increased from 9px */
+            font-size: 12px;      
             font-weight: 800; 
             color: var(--purple); 
         }
-        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 90px; padding: 4px; position: relative; display: flex; flex-direction: column; gap: 4px; }
+        .cal-d { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: 95px; padding: 6px; position: relative; display: flex; flex-direction: column; gap: 4px; }
         .cal-num { 
-            font-size: 14px;      /* Increased from 10px */
+            font-size: 14px;      
             color: #9CA3AF; 
             font-weight: 700; 
             margin-bottom: 2px; 
@@ -58,163 +58,5 @@
         .cal-tag { 
             background: var(--purple); 
             color: white; 
-            font-size: 10px;     /* Increased from 7px */
-            padding: 4px 6px;    /* Extra padding for better text presentation */
-            border-radius: 4px; 
-            font-weight: 700; 
-            line-height: 1.2; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-        }
-
-        nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; }
-        .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
-        .nav-btn.active { color: var(--purple); }
-        .nav-indicator { width: 12px; height: 3px; border-radius: 10px; background: transparent; }
-        .active .nav-indicator { background: var(--gold); }
-        
-        /* Mobile adjustment for smaller viewports */
-        @media (max-width: 480px) {
-            .cal-d { min-height: 75px; }
-            .cal-tag { font-size: 9px; padding: 2px 4px; }
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; } }
-    </style>
-</head>
-<body>
-<header><h1>Tune In</h1><p>Central Music Portal</p></header>
-<main>
-    <div id="view-sched" class="view active">
-        <div class="split-container">
-            <div class="split-col"><div class="page-title" id="label-today">Today</div><div id="list-today"></div></div>
-            <div class="split-col"><div class="page-title" id="label-tomorrow">Tomorrow</div><div id="list-tomorrow"></div></div>
-        </div>
-    </div>
-    <div id="view-cal" class="view">
-        <div class="page-title" style="text-align: center;">Calendar</div>
-        <div id="month-display" style="text-align: center; font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 15px;">Month</div>
-        <div class="cal-grid" id="calendar-body">
-            <div class="cal-h">SUN</div><div class="cal-h">MON</div><div class="cal-h">TUE</div><div class="cal-h">WED</div><div class="cal-h">THU</div><div class="cal-h">FRI</div><div class="cal-h">SAT</div>
-        </div>
-    </div>
-    <div id="view-res" class="view"><div class="page-title">Resources</div><div id="list-res"></div></div>
-    <div id="view-vol" class="view"><div class="page-title">Committees</div><div id="list-vol"></div></div>
-</main>
-<nav>
-    <button class="nav-btn active" onclick="switchTab('view-sched', this)">HOME<div class="nav-indicator"></div></button>
-    <button class="nav-btn" onclick="switchTab('view-cal', this)">CALENDAR<div class="nav-indicator"></div></button>
-    <button class="nav-btn" onclick="switchTab('view-res', this)">RESOURCES<div class="nav-indicator"></div></button>
-    <button class="nav-btn" onclick="switchTab('view-vol', this)">JOIN<div class="nav-indicator"></div></button>
-</nav>
-
-<script>
-    const LINKS = {
-        schedule: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyU9Ns94s1Qj3QLmMpMahY3TKvYEtZsOe-KIHw7yEU82gJDTgLrMELkzGZRPSKvmjWg-Y_X0NDfgNL/pub?gid=317537579&single=true&output=csv",
-        committees: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyU9Ns94s1Qj3QLmMpMahY3TKvYEtZsOe-KIHw7yEU82gJDTgLrMELkzGZRPSKvmjWg-Y_X0NDfgNL/pub?gid=1292458613&single=true&output=csv",
-        resources: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyU9Ns94s1Qj3QLmMpMahY3TKvYEtZsOe-KIHw7yEU82gJDTgLrMELkzGZRPSKvmjWg-Y_X0NDfgNL/pub?gid=1368638081&single=true&output=csv",
-        events: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyU9Ns94s1Qj3QLmMpMahY3TKvYEtZsOe-KIHw7yEU82gJDTgLrMELkzGZRPSKvmjWg-Y_X0NDfgNL/pub?gid=734260877&single=true&output=csv"
-    };
-
-    let store = { schedule: {}, committees: [], resources: [], events: {} };
-
-    async function loadAll() {
-        try {
-            const results = await Promise.all([
-                fetch(LINKS.schedule + '&cb=' + Date.now()).then(r => r.text()),
-                fetch(LINKS.committees + '&cb=' + Date.now()).then(r => r.text()),
-                fetch(LINKS.resources + '&cb=' + Date.now()).then(r => r.text()),
-                fetch(LINKS.events + '&cb=' + Date.now()).then(r => r.text())
-            ]);
-            parseSchedule(results[0]);
-            parseCommittees(results[1]);
-            parseResources(results[2]);
-            parseEvents(results[3]);
-            refresh();
-        } catch(e) { console.error("Sync Error"); }
-    }
-
-    function parseCSV(t) { 
-        return t.split('\n').filter(r => r.trim()).map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/"/g, '').trim())); 
-    }
-
-    function parseSchedule(csv) {
-        const rows = parseCSV(csv).slice(1);
-        const dayMap = {"sunday":0,"monday":1,"tuesday":2,"wednesday":3,"thursday":4,"friday":5,"saturday":6};
-        rows.forEach(c => {
-            let d = c[0].toLowerCase();
-            let dayNum = dayMap[d] !== undefined ? dayMap[d] : d;
-            if(!store.schedule[dayNum]) store.schedule[dayNum] = [];
-            store.schedule[dayNum].push({cat:c[1], name:c[2], time:c[3], room:c[4]});
-        });
-    }
-    
-    function parseResources(csv) { store.resources = parseCSV(csv).slice(1).map(c => ({name:c[0], focus:c[1], link:c[2]})).filter(i => i.name); }
-    function parseCommittees(csv) { store.committees = parseCSV(csv).slice(1).map(c => ({name:c[0], desc:c[1], link:c[2]})).filter(i => i.name); }
-    
-    function parseEvents(csv) { 
-        const rows = parseCSV(csv).slice(1);
-        store.events = {}; 
-        rows.forEach(c => { 
-            if(c[0]) {
-                const dayKey = c[0].toString().trim();
-                if(!store.events[dayKey]) store.events[dayKey] = [];
-                store.events[dayKey].push(c[1]);
-            }
-        }); 
-    }
-
-    function renderSched(dayNum, id) {
-        const container = document.getElementById(id);
-        const data = store.schedule[dayNum] || [];
-        if(!data.length) { container.innerHTML = '<p style="color:#9CA3AF;font-size:12px;">No rehearsals</p>'; return; }
-        let html = '';
-        ["Before School", "Lunch", "After School"].forEach(label => {
-            const firstWord = label.toLowerCase().split(' ')[0];
-            const items = data.filter(i => i.cat && i.cat.toLowerCase().includes(firstWord));
-            if(items.length) {
-                html += `<span class="cat-label">${label}</span>`;
-                items.forEach(i => html += `<div class="card"><div><h3>${i.name}</h3><p>Room ${i.room}</p></div><div class="pill">${i.time}</div></div>`);
-            }
-        });
-        container.innerHTML = html;
-    }
-
-    function refresh() {
-        const d = new Date();
-        const names = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-        document.getElementById('label-today').innerText = names[d.getDay()];
-        document.getElementById('label-tomorrow').innerText = names[(d.getDay()+1)%7];
-        renderSched(d.getDay(), 'list-today');
-        renderSched((d.getDay()+1)%7, 'list-tomorrow');
-        
-        const start = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
-        const total = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        const grid = document.getElementById('calendar-body');
-        document.getElementById('month-display').innerText = d.toLocaleString('default', { month: 'long', year: 'numeric' });
-        
-        while(grid.children.length > 7) grid.removeChild(grid.lastChild);
-        for(let i=0; i<start; i++) grid.innerHTML += '<div class="cal-d"></div>';
-        
-        for(let day=1; day<=total; day++) {
-            const dayEvents = store.events[day.toString()] || [];
-            const evHtml = dayEvents.map(ev => `<span class="cal-tag">${ev}</span>`).join('');
-            const isToday = (day === d.getDate()) ? 'today' : '';
-            grid.innerHTML += `<div class="cal-d ${isToday}"><span class="cal-num">${day}</span>${evHtml}</div>`;
-        }
-        
-        document.getElementById('list-res').innerHTML = store.resources.map(r => `<a href="${r.link}" target="_blank" class="card"><div><h3>${r.name}</h3><p>${r.focus}</p></div><div class="pill">Visit</div></a>`).join('');
-        document.getElementById('list-vol').innerHTML = store.committees.map(c => `<a href="${c.link}" target="_blank" class="card"><div><h3>${c.name}</h3><p>${c.desc}</p></div><div class="pill">Join</div></a>`).join('');
-    }
-
-    function switchTab(id, btn) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(l => l.classList.remove('active'));
-        btn.classList.add('active');
-    }
-    loadAll();
-</script>
-</body>
-</html>
+            font-size: 11px;     /* Kept larger text size */
+            padding: 4
