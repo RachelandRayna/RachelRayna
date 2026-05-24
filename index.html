@@ -16,6 +16,13 @@
         .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         
+        /* SATURDAY CUT-OFF FIX: Allow the calendar view container to safely handle width limits */
+        #view-cal {
+            width: 100%;
+            overflow-x: auto; /* Adds a fallback swipe/scroll if the screen gets too thin */
+            padding-bottom: 10px;
+        }
+
         .split-container { display: flex; flex-direction: row; gap: 25px; align-items: flex-start; margin-top: 10px; }
         .split-col { flex: 1; }
         @media (max-width: 700px) { .split-container { flex-direction: column; } }
@@ -27,15 +34,17 @@
         .card p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); }
         .pill { font-size: 10px; font-weight: 700; background: white; padding: 5px 10px; border-radius: 6px; color: var(--purple); white-space: nowrap; }
 
-        /* CALENDAR LAYOUT (SPREAD OUT AGAIN) */
+        /* CALENDAR LAYOUT */
         .cal-grid { 
             display: grid; 
-            grid-template-columns: repeat(7, 1fr); 
+            grid-template-columns: repeat(7, minmax(40px, 1fr)); /* Prevents columns from shrinking into oblivion */
             border: 1px solid var(--border); 
             border-radius: 12px; 
             overflow: hidden; 
             background: #fff; 
-            max-width: 1050px;     /* Allowed to stretch much further */
+            max-width: 1050px;    
+            width: 100%;
+            min-width: 600px; /* Ensures calendar grid doesn't collapse horizontally and hide columns */
             margin: 0 auto;       
         }
         .cal-h { 
@@ -58,7 +67,7 @@
         .cal-tag { 
             background: var(--purple); 
             color: white; 
-            font-size: 11px;     /* Kept larger text size */
+            font-size: 11px;     
             padding: 4px 6px;    
             border-radius: 4px; 
             font-weight: 700; 
@@ -74,7 +83,7 @@
         .nav-indicator { width: 12px; height: 3px; border-radius: 10px; background: transparent; }
         .active .nav-indicator { background: var(--gold); }
         
-        /* Mobile fallback adjustments */
+        /* Mobile adjustments */
         @media (max-width: 480px) {
             .cal-d { min-height: 75px; padding: 4px; }
             .cal-tag { font-size: 9px; padding: 2px 4px; }
