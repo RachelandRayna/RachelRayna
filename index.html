@@ -12,14 +12,13 @@
         header { padding: 30px 20px 10px; text-align: center; flex-shrink: 0; }
         header h1 { font-size: 32px; margin: 0; color: var(--purple); font-weight: 800; letter-spacing: -0.04em; }
         header p { margin: 2px 0 0; color: var(--gold); text-transform: uppercase; font-weight: 700; font-size: 10px; letter-spacing: 0.3em; }
-        main { flex: 1; overflow-y: auto; padding: 0 20px 100px; }
+        main { flex: 1; overflow-y: auto; padding: 0 20px 180px; }
         .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         
-        /* SATURDAY CUT-OFF FIX: Allow the calendar view container to safely handle width limits */
         #view-cal {
             width: 100%;
-            overflow-x: auto; /* Adds a fallback swipe/scroll if the screen gets too thin */
+            overflow-x: auto; 
             padding-bottom: 10px;
         }
 
@@ -37,14 +36,14 @@
         /* CALENDAR LAYOUT */
         .cal-grid { 
             display: grid; 
-            grid-template-columns: repeat(7, minmax(40px, 1fr)); /* Prevents columns from shrinking into oblivion */
+            grid-template-columns: repeat(7, minmax(40px, 1fr)); 
             border: 1px solid var(--border); 
             border-radius: 12px; 
             overflow: hidden; 
             background: #fff; 
             max-width: 1050px;    
             width: 100%;
-            min-width: 600px; /* Ensures calendar grid doesn't collapse horizontally and hide columns */
+            min-width: 600px; 
             margin: 0 auto;       
         }
         .cal-h { 
@@ -77,7 +76,22 @@
             text-overflow: ellipsis; 
         }
 
-        nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; }
+        /* FIXED: Added z-index to enforce navigation layer hierarchy */
+        nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            height: 80px; 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(15px); 
+            border-top: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            padding-bottom: 15px; 
+            z-index: 10; /* Ensures navigation stays on top of highlighted calendar days */
+        }
         .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .nav-btn.active { color: var(--purple); }
         .nav-indicator { width: 12px; height: 3px; border-radius: 10px; background: transparent; }
