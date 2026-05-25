@@ -63,8 +63,10 @@
             margin-bottom: 2px; 
         }
         .cal-d.today { background: #FAF9FF; box-shadow: inset 0 0 0 1px var(--purple); z-index: 1; }
+        
+        /* CALENDAR TAGS (COLOR VARIABLES CONFIGURABLE BELOW) */
         .cal-tag { 
-            background: var(--purple); 
+            background: var(--purple); /* Fallback default background */
             color: white; 
             font-size: 11px;     
             padding: 4px 6px;    
@@ -76,7 +78,6 @@
             text-overflow: ellipsis; 
         }
 
-        /* FIXED: Added z-index to enforce navigation layer hierarchy */
         nav { 
             position: fixed; 
             bottom: 0; 
@@ -90,7 +91,7 @@
             justify-content: space-around; 
             align-items: center; 
             padding-bottom: 15px; 
-            z-index: 10; /* Ensures navigation stays on top of highlighted calendar days */
+            z-index: 10; 
         }
         .nav-btn { border: none; background: none; color: #9CA3AF; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .nav-btn.active { color: var(--purple); }
@@ -141,6 +142,16 @@
     };
 
     let store = { schedule: {}, committees: [], resources: [], events: {} };
+
+    // COLOR CONFIGURATION DICTIONARY (Change hex codes here to change visual colors)
+    const COLOR_MAP = {
+        blue: "#2563EB",
+        green: "#16A34A",
+        red: "#DC2626",
+        gold: "#D4AF37",
+        pink: "#DB2777",
+        orange: "#EA580C"
+    };
 
     async function loadAll() {
         try {
@@ -222,7 +233,24 @@
         
         for(let day=1; day<=total; day++) {
             const dayEvents = store.events[day.toString()] || [];
-            const evHtml = dayEvents.map(ev => `<span class="cal-tag">${ev}</span>`).join('');
+            
+            // PROCESS ENTRIES TO DETECT COLORS ENCLOSED IN PARENTHESES
+            const evHtml = dayEvents.map(rawEv => {
+                let cleanText = rawEv;
+                let bgStyle = '';
+                
+                // Regular Expression checks for pattern "(color)" at the end of the line
+                const match = rawEv.match(/\(([^)]+)\)$/);
+                if (match) {
+                    const colorKey = match[1].toLowerCase().trim();
+                    if (COLOR_MAP[colorKey]) {
+                        bgStyle = ` style="background-color: ${COLOR_MAP[colorKey]};"`;
+                        cleanText = rawEv.replace(/\s*\([^)]+\)$/, ''); // Clean "(color)" out of visible text
+                    }
+                }
+                return `<span class="cal-tag"${bgStyle}>${cleanText}</span>`;
+            }).join('');
+            
             const isToday = (day === d.getDate()) ? 'today' : '';
             grid.innerHTML += `<div class="cal-d ${isToday}"><span class="cal-num">${day}</span>${evHtml}</div>`;
         }
