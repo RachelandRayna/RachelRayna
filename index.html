@@ -202,7 +202,13 @@
     function renderSched(dayNum, id) {
         const container = document.getElementById(id);
         const data = store.schedule[dayNum] || [];
-        if(!data.length) { container.innerHTML = '<p style="color:#9CA3AF;font-size:12px;">No rehearsals</p>'; return; }
+        const labelText = id === 'list-today' ? 'today' : 'tomorrow';
+
+        if(!data.length) { 
+            container.innerHTML = `<p style="color:#9CA3AF;font-size:12px;">No rehearsals ${labelText}</p>`; 
+            return; 
+        }
+        
         let html = '';
         ["Before School", "Lunch", "After School"].forEach(label => {
             const firstWord = label.toLowerCase().split(' ')[0];
